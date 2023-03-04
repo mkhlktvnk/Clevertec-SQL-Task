@@ -7,3 +7,9 @@ GROUP BY aircrafts.aircraft_code, aircrafts.model, seats.fare_conditions
 ORDER BY aircraft_code;
 
 /* TASK-2 */
+
+SELECT aircrafts.model, count(seats.seat_no) AS seat_count
+FROM seats
+         INNER JOIN aircrafts ON aircrafts.aircraft_code = seats.aircraft_code
+GROUP BY aircrafts.model
+ORDER BY seat_count DESC LIMIT 3;
