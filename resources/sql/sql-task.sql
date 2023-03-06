@@ -29,3 +29,14 @@ FROM aircrafts_data
 WHERE aircrafts_data.model::json ->> 'ru' LIKE 'Аэробус A321-200'
   AND seats.fare_conditions NOT LIKE 'Economy'
 ORDER BY seats;
+
+/* TASK-4 */
+SELECT airports_data.airport_code               AS code,
+       airports_data.airport_name::json -> 'ru' AS name,
+       airports_data.city::json ->> 'ru'        AS city
+FROM airports_data
+WHERE city = ANY
+      (SELECT airports_data.city
+       FROM airports_data
+       GROUP BY airports_data.city
+       HAVING count(airport_code) >= 2);
