@@ -1,9 +1,9 @@
 /* TASK-1 */
 
-SELECT aircrafts_data.aircraft_code        as code,
-       aircrafts_data.model::json ->> 'ru' as model,
-       seats.fare_conditions               as fare_conditions,
-       count(seats.seat_no)                as seat_count
+SELECT aircrafts_data.aircraft_code        AS code,
+       aircrafts_data.model::json ->> 'ru' AS model,
+       seats.fare_conditions               AS fare_conditions,
+       count(seats.seat_no)                AS seat_count
 FROM aircrafts_data
          JOIN seats ON aircrafts_data.aircraft_code = seats.aircraft_code
 GROUP BY aircrafts_data.aircraft_code, aircrafts_data.model, seats.fare_conditions
