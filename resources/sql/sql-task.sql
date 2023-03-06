@@ -125,3 +125,22 @@ VALUES (10, 1),
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS orders;
 
+/* TASK-8 */
+/* Вывести всех пассажиров, стоимость их билета, номер рейса, имя аэропорта вылета, имя аэропорта прибытия, модель самолета
+   для самолета с кодом 321 и для местами не бизнесс класса c сортировкой по стоимости по убыванию
+*/
+
+SELECT tickets.passenger_name AS passenger_name,
+       ticket_flights.amount AS amount,
+       flights.flight_no AS flight_no,
+       arrivial_airport.airport_name::json->>'ru' as arrivial_airport,
+       departure_airport.airport_name::json->>'ru' as departure_airport,
+       aircrafts_data.model::json->>'ru' as aircraft_model
+FROM tickets
+         JOIN ticket_flights ON tickets.ticket_no = ticket_flights.ticket_no
+         JOIN flights ON flights.flight_id = ticket_flights.flight_id
+         JOIN airports_data arrivial_airport ON flights.arrival_airport = arrivial_airport.airport_code
+         JOIN airports_data departure_airport ON flights.departure_airport = departure_airport.airport_code
+         JOIN aircrafts_data ON flights.aircraft_code = aircrafts_data.aircraft_code
+WHERE aircrafts_data.aircraft_code = '321' AND ticket_flights.fare_conditions != 'Business'
+ORDER BY ticket_flights.amount DESC;
