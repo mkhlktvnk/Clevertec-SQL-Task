@@ -66,3 +66,19 @@ WHERE flights.departure_airport = ANY (SELECT airport_code
 ORDER BY scheduled_departure
 LIMIT 1;
 
+/* TASK-6 */
+
+SELECT *
+FROM (SELECT *
+      FROM ticket_flights
+      WHERE amount IN (SELECT min(amount)
+                       FROM ticket_flights)
+      LIMIT 1) AS min
+UNION
+SELECT *
+FROM (SELECT *
+      FROM ticket_flights
+      WHERE amount IN (SELECT max(amount)
+                       FROM ticket_flights)
+      LIMIT 1) AS max;
+
