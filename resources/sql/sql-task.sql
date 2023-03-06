@@ -82,3 +82,46 @@ FROM (SELECT *
                        FROM ticket_flights)
       LIMIT 1) AS max;
 
+/* TASK-7 */
+
+CREATE TABLE IF NOT EXISTS customers
+(
+    id        BIGSERIAL    NOT NULL,
+    firstname VARCHAR(255) NOT NULL CHECK ( firstname != '' ),
+    lastname  VARCHAR(255) NOT NULL CHECK ( lastname != '' ),
+    email     VARCHAR(255) NOT NULL,
+    phone     VARCHAR(15)  NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (email),
+    UNIQUE (phone),
+    CONSTRAINT email_check CHECK ( email ~* '^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$' )
+);
+
+INSERT INTO customers (firstname, lastname, email, phone)
+VALUES ('Alex', 'Alexandrov', 'alex.alexandrov@gmail.com', '+375258572832'),
+       ('Angelina', 'Petrova', 'angelina.petrova@gmail.com', '+375258190201'),
+       ('Dmitry', 'Ivanov', 'dmitry.ivanov@gmail.com', '+37525010122'),
+       ('Tatyana', 'Golub', 'tatyana.golub@gmail.com', '+375251232341'),
+       ('Alexey', 'Ivleev', 'alexey.ivleev@gmail.com', '+375256510402');
+
+CREATE TABLE IF NOT EXISTS orders
+(
+    id          BIGSERIAL NOT NULL,
+    quantity    INT       NOT NULL,
+    customer_id BIGSERIAL NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (id),
+    FOREIGN KEY (customer_id) REFERENCES customers,
+    CONSTRAINT phone_check CHECK ( quantity >= 0 )
+);
+
+INSERT INTO orders(quantity, customer_id)
+VALUES (10, 1),
+       (5, 2),
+       (3, 3),
+       (6, 4),
+       (8, 5);
+
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS orders;
+
