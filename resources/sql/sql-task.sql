@@ -40,3 +40,29 @@ WHERE city = ANY
        FROM airports_data
        GROUP BY airports_data.city
        HAVING count(airport_code) >= 2);
+
+/* TASK-5 */
+
+SELECT flights.flight_id                             AS flight_id,
+       flights.flight_no                             AS flight_no,
+       flights.scheduled_departure                   AS scheduled_departure,
+       flights.scheduled_arrival                     AS scheduled_arrival,
+       departure_airport.city::json ->> 'ru'         AS departure_city,
+       departure_airport.airport_name::json ->> 'ru' AS departure_airport,
+       arrivial_airport.city::json ->> 'ru'          AS arrivial_city,
+       arrivial_airport.airport_name::json ->> 'ru'  AS arrivial_airport,
+       ad.model::json ->> 'ru'                       AS airplane_model
+FROM flights
+         JOIN aircrafts_data ad ON ad.aircraft_code = flights.aircraft_code
+         JOIN airports_data arrivial_airport ON arrivial_airport.airport_code = flights.arrival_airport
+         JOIN airports_data departure_airport ON departure_airport.airport_code = flights.departure_airport
+WHERE flights.departure_airport = ANY (SELECT airport_code
+                                       FROM airports_data
+                                       WHERE city::json ->> 'ru' = 'Екатеринбург')
+  AND flights.arrival_airport = ANY (SELECT airport_code
+                                     FROM airports_data
+                                     WHERE city::json ->> 'ru' = 'Москва')
+  AND status IN ('Scheduled', 'On Time', 'Delayed')
+ORDER BY scheduled_departure
+LIMIT 1;
+
