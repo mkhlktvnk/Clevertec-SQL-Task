@@ -26,8 +26,8 @@ SELECT aircrafts_data.aircraft_code        AS code,
        seats.seat_no                       AS seats
 FROM aircrafts_data
          JOIN seats ON aircrafts_data.aircraft_code = seats.aircraft_code
-WHERE aircrafts_data.model::json ->> 'ru' LIKE 'Аэробус A321-200'
-  AND seats.fare_conditions NOT LIKE 'Economy'
+WHERE aircrafts_data.model::json ->> 'ru' = 'Аэробус A321-200'
+  AND seats.fare_conditions != 'Economy'
 ORDER BY seats;
 
 /* TASK-4 */
